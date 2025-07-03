@@ -1,2 +1,14 @@
 streamlit
+pandas
+numpy
+scikit-learn
+matplotlib
+statsmodels
+torch
 pyrebase4
+firebase-admin
+gcloud
+setuptools
+joblib
+openpyxl
+plotly
