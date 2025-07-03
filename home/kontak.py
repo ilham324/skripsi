@@ -7,7 +7,7 @@ Jika Anda memiliki pertanyaan, kritik, atau saran silakan hubungi kami:
 
 - 📧 Email: `romandailham@gmail.com`
 - 🧑 GitHub: [ilham324](https://github.com/ilham324)
-- 📱 WhatsApp: 0812-3456-7890
+- 📱 WhatsApp: 0838-0908-696
 
 Terima kasih telah menggunakan aplikasi ini 🙏
     """)

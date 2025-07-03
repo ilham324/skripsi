@@ -1,12 +1,11 @@
 import streamlit as st
 from pyrebase import pyrebase
-import subprocess
 
 # Konfigurasi Firebase
 firebaseConfig = {
     "apiKey": "AIzaSyAFVY0GjcLzrg5PrrbmBeZWXJkZGfgihcU",
     "authDomain": "skripsi-86872.firebaseapp.com",
-    "databaseURL": "",  # Harap isi URL database Anda jika digunakan
+    "databaseURL": "",
     "projectId": "skripsi-86872",
     "storageBucket": "skripsi-86872.appspot.com",
     "messagingSenderId": "722934043351",
@@ -14,58 +13,53 @@ firebaseConfig = {
     "measurementId": "G-E1RCLT7E9H"
 }
 
-# Inisialisasi Firebase
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
 
-def login():
-    """Fungsi Login"""
-    st.title("Login")
+def login_page():
+    st.title("🔐 Login")
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
-    login_btn = st.button("Login")
-
-    if login_btn:
+    if st.button("Login"):
         try:
             user = auth.sign_in_with_email_and_password(email, password)
-            st.success("Login berhasil!")
-            st.session_state['user'] = user  # Simpan user di session
-            # Pindah ke halaman `home/index.py`
-            subprocess.Popen(["streamlit", "run", "home/index.py"])
-            st.stop()  # Hentikan eksekusi halaman saat ini
+            st.session_state['login'] = True
+            st.session_state['email'] = email
+            st.success("Login berhasil! Redirecting...")
+            st.rerun()  # ✅ menggantikan experimental_rerun
         except Exception as e:
-            st.error(f"Terjadi kesalahan saat login: {e}")
+            st.error("Gagal login: email atau password salah.")
 
-def register():
-    """Fungsi Registrasi"""
-    st.title("Register")
+def register_page():
+    st.title("📝 Register")
     email = st.text_input("Email")
     password = st.text_input("Password", type="password")
-    confirm_password = st.text_input("Konfirmasi Password", type="password")
-    register_btn = st.button("Register")
-
-    if register_btn:
-        if password != confirm_password:
-            st.error("Password dan Konfirmasi Password tidak cocok!")
+    confirm = st.text_input("Konfirmasi Password", type="password")
+    if st.button("Register"):
+        if password != confirm:
+            st.error("Password tidak cocok.")
         else:
             try:
                 auth.create_user_with_email_and_password(email, password)
-                st.success("Registrasi berhasil! Silakan login.")
+                st.success("Registrasi berhasil. Silakan login.")
             except Exception as e:
-                st.error(f"Terjadi kesalahan saat registrasi: {e}")
+                st.error("Registrasi gagal. Coba email lain.")
 
 def main():
-    """Fungsi Utama"""
-    if 'user' not in st.session_state:
-        st.session_state['user'] = None
+    if 'login' not in st.session_state:
+        st.session_state['login'] = False
+        st.session_state['email'] = None
 
-    st.sidebar.title("Navigasi")
-    menu = st.sidebar.radio("Pilih menu", ["Login", "Register"])
-
-    if menu == "Login":
-        login()
-    elif menu == "Register":
-        register()
+    if st.session_state['login']:
+        from home import index
+        index.main()
+    else:
+        st.sidebar.title("🔍 Autentikasi")
+        menu = st.sidebar.radio("Pilih menu", ["Login", "Register"])
+        if menu == "Login":
+            login_page()
+        else:
+            register_page()
 
 if __name__ == "__main__":
     main()
